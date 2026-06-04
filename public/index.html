@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Absensi — Puskopkar Karawang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1B4F8A;
+      --primary-hover: #153f6e;
+      --primary-light: #E6F1FB;
+      --primary-mid: #378ADD;
+      --accent: #1D9E75;
+      --accent-light: #E1F5EE;
+      --danger: #E24B4A;
+      --danger-light: #FCEBEB;
+      --amber: #BA7517;
+      --amber-light: #FAEEDA;
+      --surface: #ffffff;
+      --surface2: #F7F7F5;
+      --surface3: #EEECEA;
+      --border: rgba(0,0,0,0.1);
+      --border2: rgba(0,0,0,0.18);
+      --text1: #1a1a18;
+      --text2: #6b6b67;
+      --text3: #9b9b96;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    html { font-family: var(--font); background: #F0EEE9; min-height: 100vh; }
+    body { min-height: 100vh; }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 1.25rem 1.75rem;
+      background: var(--primary);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(27,79,138,0.3);
+    }
+    .logo-box {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2);
+    }
+    .logo-box i { font-size: 30px; color: white; }
+    .header-text h1 { font-size: 18px; font-weight: 700; color: white; line-height: 1.3; }
+    .header-text p { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; letter-spacing: 0.3px; }
+    .header-right { margin-left: auto; text-align: right; }
+    .clock-display { font-family: var(--mono); font-size: 26px; font-weight: 500; color: white; letter-spacing: 2px; }
+    .date-display { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+
+    /* STATS */
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+    .stat-label i { font-size: 15px; }
+    .stat-value { font-size: 28px; font-weight: 700; line-height: 1; }
+    .stat-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+    /* GRID */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 11px; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 1.125rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-title i { font-size: 15px; }
+
+    /* FORM */
+    .form-group { margin-bottom: 1rem; }
+    .form-label { font-size: 13px; font-weight: 500; color: var(--text2); display: block; margin-bottom: 6px; }
+
+    input[type=text], select {
+      width: 100%; padding: 0 12px; height: 42px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-size: 14px; font-family: var(--font);
+      background: var(--surface2);
+      color: var(--text1);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none; -webkit-appearance: none;
+    }
+    input[type=text]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.18);
+      background: var(--surface);
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b67' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .btn {
+      flex: 1; height: 46px; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; font-family: var(--font);
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.15s; letter-spacing: 0.2px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-in { background: var(--accent); color: white; box-shadow: 0 2px 8px rgba(29,158,117,0.3); }
+    .btn-in:hover:not(:disabled) { background: #168a63; box-shadow: 0 4px 12px rgba(29,158,117,0.4); }
+    .btn-out { background: var(--danger); color: white; box-shadow: 0 2px 8px rgba(226,75,74,0.3); }
+    .btn-out:hover:not(:disabled) { background: #c43a39; box-shadow: 0 4px 12px rgba(226,75,74,0.4); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      color: white; padding: 13px 22px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; font-family: var(--font);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 9999; white-space: nowrap;
+      display: flex; align-items: center; gap: 9px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--accent); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--primary); }
+
+    /* BADGES */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-in { background: var(--accent-light); color: #085041; }
+    .badge-out { background: var(--danger-light); color: #791F1F; }
+
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .dot-green { background: var(--accent); }
+    .dot-red { background: var(--danger); }
+
+    /* LOG TABLE */
+    .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .log-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 11px; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.7px;
+      border-bottom: 1px solid var(--border2);
+      background: var(--surface2);
+    }
+    .log-table th:first-child { border-radius: 8px 0 0 0; }
+    .log-table th:last-child { border-radius: 0 8px 0 0; }
+    .log-table td {
+      padding: 11px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text1); vertical-align: middle;
+    }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tbody tr:hover td { background: var(--surface2); }
+
+    .mono { font-family: var(--mono); font-size: 12px; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem;
+      color: var(--text3);
+    }
+    .empty-state i { font-size: 40px; opacity: 0.35; margin-bottom: 10px; display: block; }
+    .empty-state p { font-size: 13px; }
+
+    /* FILTER ROW */
+    .filter-row {
+      display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: center;
+    }
+    .filter-row input[type=text], .filter-row select { height: 38px; }
+    .search-wrap { flex: 2; position: relative; }
+    .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 16px; pointer-events: none; }
+    .search-wrap input { padding-left: 32px; }
+
+    .btn-export {
+      height: 38px; padding: 0 14px; border-radius: var(--radius-sm);
+      background: var(--surface2); border: 1px solid var(--border2);
+      font-size: 13px; font-weight: 500; font-family: var(--font);
+      color: var(--text1); cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-export:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary-mid); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 0; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border2); }
+    .tab {
+      padding: 10px 20px; font-size: 14px; font-weight: 500; cursor: pointer;
+      color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: var(--font); transition: color 0.15s;
+      display: flex; align-items: center; gap: 6px; user-select: none;
+    }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab:hover:not(.active) { color: var(--text1); }
+    .tab i { font-size: 16px; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* AVATAR */
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--primary-light); color: var(--primary);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; vertical-align: middle;
+      flex-shrink: 0; margin-right: 9px;
+    }
+
+    .duration-pill {
+      background: var(--primary-light); color: var(--primary);
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; font-family: var(--mono);
+    }
+
+    /* RECENT LOG */
+    .recent-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.3s ease;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+
+    /* PRINT */
+    @media print {
+      body { background: white; }
+      .header { background: var(--primary) !important; -webkit-print-color-adjust: exact; }
+      .btn-row, .filter-row, .tabs { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .grid2 { grid-template-columns: 1fr; }
+      .grid3 { grid-template-columns: 1fr 1fr; }
+      .grid3 .stat-card:last-child { grid-column: span 2; }
+      .clock-display { font-size: 18px; }
+      .header-text h1 { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast" class="toast">
+  <i id="toast-icon" class="ti ti-check"></i>
+  <span id="toast-msg">Absensi berhasil dicatat</span>
+</div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-box">
+      <i class="ti ti-building-community" aria-hidden="true"></i>
+    </div>
+    <div class="header-text">
+      <h1>Pusat Koperasi Karyawan</h1>
+      <p>Puskopkar Karawang &nbsp;·&nbsp; Sistem Absensi Karyawan</p>
+    </div>
+    <div class="header-right">
+      <div class="clock-display" id="clock">--:--:--</div>
+      <div class="date-display" id="dateDisplay">—</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid3">
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-users" aria-hidden="true"></i> Hadir Hari Ini</div>
+      <div class="stat-value" id="stat-hadir" style="color: var(--accent);">0</div>
+      <div class="stat-sub">karyawan tercatat masuk</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-door-exit" aria-hidden="true"></i> Sudah Pulang</div>
+      <div class="stat-value" id="stat-pulang" style="color: var(--danger);">0</div>
+      <div class="stat-sub">karyawan tercatat keluar</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-building" aria-hidden="true"></i> Masih Di Kantor</div>
+      <div class="stat-value" id="stat-kantor" style="color: var(--primary);">0</div>
+      <div class="stat-sub">karyawan aktif sekarang</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="grid2">
+
+    <!-- FORM ABSENSI -->
+    <div class="card">
+      <div class="section-title"><i class="ti ti-fingerprint" aria-hidden="true"></i> Catat Absensi</div>
+
+      <div class="form-group">
+        <label class="form-label" for="inp-nip">NIP / ID Karyawan</label>
+        <input type="text" id="inp-nip" placeholder="Contoh: PKK-001" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-nama">Nama Lengkap</label>
+        <input type="text" id="inp-nama" placeholder="Nama karyawan..." autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-divisi">Divisi / Unit Kerja</label>
+        <select id="inp-divisi">
+          <option value="">— Pilih Divisi —</option>
+          <option>Administrasi &amp; Umum</option>
+          <option>Keuangan &amp; Akuntansi</option>
+          <option>Simpan Pinjam</option>
+          <option>Usaha &amp; Perdagangan</option>
+          <option>SDM &amp; Pengembangan</option>
+          <option>IT &amp; Sistem Informasi</option>
+          <option>Pengawas</option>
+          <option>Direksi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-ket">Keterangan <span style="color:var(--text3); font-weight:400;">(opsional)</span></label>
+        <input type="text" id="inp-ket" placeholder="Contoh: dinas luar, terlambat..." autocomplete="off" />
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-in" onclick="absen('in')">
+          <i class="ti ti-login" aria-hidden="true"></i> Absen Masuk
+        </button>
+        <button class="btn btn-out" onclick="absen('out')">
+          <i class="ti ti-logout" aria-hidden="true"></i> Absen Keluar
+        </button>
+      </div>
+    </div>
+
+    <!-- AKTIVITAS TERKINI -->
+    <div class="card">
+      <div class="section-title"><i class="ti ti-activity" aria-hidden="true"></i> Aktivitas Terkini</div>
+      <div id="recent-log" style="max-height: 340px; overflow-y: auto;">
+        <div class="empty-state">
+          <i class="ti ti-clipboard-list" aria-hidden="true"></i>
+          <p>Belum ada aktivitas hari ini</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LOG & REKAP -->
+  <div class="card">
+    <div class="tabs" role="tablist">
+      <div class="tab active" onclick="switchTab('log')" role="tab" aria-selected="true">
+        <i class="ti ti-list" aria-hidden="true"></i> Log Absensi
+      </div>
+      <div class="tab" onclick="switchTab('rekap')" role="tab" aria-selected="false">
+        <i class="ti ti-report-analytics" aria-hidden="true"></i> Rekap Karyawan
+      </div>
+    </div>
+
+    <!-- PANEL LOG -->
+    <div class="panel active" id="panel-log">
+      <div class="filter-row">
+        <div class="search-wrap">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="text" id="search-log" placeholder="Cari nama atau NIP..." oninput="renderLog()" />
+        </div>
+        <select id="filter-status" onchange="renderLog()" style="flex:1; height:38px;">
+          <option value="">Semua Status</option>
+          <option value="in">Masuk</option>
+          <option value="out">Keluar</option>
+        </select>
+        <select id="filter-divisi" onchange="renderLog()" style="flex:1.2; height:38px;">
+          <option value="">Semua Divisi</option>
+          <option>Administrasi &amp; Umum</option>
+          <option>Keuangan &amp; Akuntansi</option>
+          <option>Simpan Pinjam</option>
+          <option>Usaha &amp; Perdagangan</option>
+          <option>SDM &amp; Pengembangan</option>
+          <option>IT &amp; Sistem Informasi</option>
+          <option>Pengawas</option>
+          <option>Direksi</option>
+        </select>
+        <button class="btn-export" onclick="exportCSV()">
+          <i class="ti ti-download" aria-hidden="true"></i> Ekspor CSV
+        </button>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>NIP</th>
+              <th>Nama Karyawan</th>
+              <th>Divisi</th>
+              <th>Status</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="log-tbody">
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="ti ti-inbox" aria-hidden="true"></i>
+                <p>Belum ada data absensi</p>
+              </div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL REKAP -->
+    <div class="panel" id="panel-rekap">
+      <div id="rekap-content">
+        <div class="empty-state">
+          <i class="ti ti-user-circle" aria-hidden="true"></i>
+          <p>Belum ada data untuk direkap</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="text-align:center; font-size:11px; color:var(--text3); margin-top:1.5rem;">
+    Sistem Absensi Puskopkar Karawang &nbsp;·&nbsp; Data tersimpan di database server
+  </p>
+
+</div>
+
+<script>
+  // ── Konfigurasi API ──────────────────────────────────────────────────────────
+  // Ganti BASE_URL jika server berjalan di host/port lain
+  const BASE_URL = '';  // kosong = sama-origin (disajikan oleh server yang sama)
+
+  const DAYS   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function initials(name){
+    const p = (name||'').trim().split(' ');
+    return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : (name||'??').slice(0,2).toUpperCase();
+  }
+  function todayISO(){
+    const d = new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+  function formatTanggal(isoDate){
+    if(!isoDate) return '—';
+    const [y,m,dd] = isoDate.split('-');
+    return `${parseInt(dd)} ${MONTHS[parseInt(m)-1]} ${y}`;
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────────────
+  function showToast(msg, type='success'){
+    const t  = document.getElementById('toast');
+    const ic = document.getElementById('toast-icon');
+    document.getElementById('toast-msg').textContent = msg;
+    t.className = 'toast show ' + type;
+    ic.className = type==='error' ? 'ti ti-alert-circle' : type==='info' ? 'ti ti-info-circle' : 'ti ti-check';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = 'toast'; }, 3500);
+  }
+
+  // ── Clock ────────────────────────────────────────────────────────────────────
+  function tickClock(){
+    const now = new Date();
+    document.getElementById('clock').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    document.getElementById('dateDisplay').textContent = `${DAYS[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  // ── API helper ───────────────────────────────────────────────────────────────
+  async function apiPost(path, body){
+    const res  = await fetch(BASE_URL + path, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify(body),
+    });
+    return res.json();
+  }
+  async function apiGet(path){
+    const res = await fetch(BASE_URL + path);
+    return res.json();
+  }
+
+  // ── Absen (kirim ke backend) ─────────────────────────────────────────────────
+  async function absen(type){
+    const nip    = document.getElementById('inp-nip').value.trim();
+    const nama   = document.getElementById('inp-nama').value.trim();
+    const divisi = document.getElementById('inp-divisi').value;
+    const ket    = document.getElementById('inp-ket').value.trim();
+
+    if(!nip)    { showToast('NIP / ID karyawan wajib diisi', 'error'); return; }
+    if(!nama)   { showToast('Nama karyawan wajib diisi', 'error'); return; }
+    if(!divisi) { showToast('Pilih divisi terlebih dahulu', 'error'); return; }
+
+    // Disable tombol sementara
+    document.querySelectorAll('.btn-in, .btn-out').forEach(b => b.disabled = true);
+
+    try {
+      const data = await apiPost('/api/absensi', { nip, nama, divisi, type, keterangan: ket });
+
+      if(!data.success){
+        showToast(data.message || 'Gagal mencatat absensi', 'error');
+        return;
+      }
+
+      showToast(data.message, 'success');
+      document.getElementById('inp-nip').value    = '';
+      document.getElementById('inp-nama').value   = '';
+      document.getElementById('inp-divisi').value = '';
+      document.getElementById('inp-ket').value    = '';
+      document.getElementById('inp-nip').focus();
+
+      // Refresh semua panel
+      await Promise.all([updateStats(), renderRecentLog(), renderLog()]);
+    } catch(e){
+      showToast('Tidak dapat menghubungi server', 'error');
+      console.error(e);
+    } finally {
+      document.querySelectorAll('.btn-in, .btn-out').forEach(b => b.disabled = false);
+    }
+  }
+
+  // ── Keyboard shortcut ────────────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && !e.shiftKey){
+      if(['inp-nip','inp-nama','inp-divisi','inp-ket'].includes(document.activeElement.id)){
+        absen('in');
+      }
+    }
+  });
+
+  // ── Stats ────────────────────────────────────────────────────────────────────
+  async function updateStats(){
+    try {
+      const data = await apiGet(`/api/absensi/stats?tanggal=${todayISO()}`);
+      if(data.success){
+        document.getElementById('stat-hadir').textContent   = data.data.hadir;
+        document.getElementById('stat-pulang').textContent  = data.data.sudah_pulang;
+        document.getElementById('stat-kantor').textContent  = data.data.masih_di_kantor;
+      }
+    } catch(e){ console.error('stats error', e); }
+  }
+
+  // ── Aktivitas Terkini ────────────────────────────────────────────────────────
+  async function renderRecentLog(){
+    const container = document.getElementById('recent-log');
+    try {
+      const data = await apiGet(`/api/absensi?tanggal=${todayISO()}&limit=8`);
+      const recent = data.data || [];
+
+      if(recent.length === 0){
+        container.innerHTML = `<div class="empty-state"><i class="ti ti-clipboard-list" aria-hidden="true"></i><p>Belum ada aktivitas hari ini</p></div>`;
+        return;
+      }
+
+      container.innerHTML = recent.map(r => {
+        const badge = r.type==='in'
+          ? `<span class="status-badge badge-in"><span class="dot dot-green"></span>Masuk</span>`
+          : `<span class="status-badge badge-out"><span class="dot dot-red"></span>Keluar</span>`;
+        return `<div class="recent-item">
+          <div class="avatar">${initials(r.nama)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.nama}</div>
+            <div style="font-size:11px;color:var(--text2);">${r.divisi}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            ${badge}
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:3px;">${r.waktu}</div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e){ console.error('recent log error', e); }
+  }
+
+  // ── Log Absensi (tabel) ───────────────────────────────────────────────────────
+  async function renderLog(){
+    const search  = document.getElementById('search-log').value.trim();
+    const fStatus = document.getElementById('filter-status').value;
+    const fDivisi = document.getElementById('filter-divisi').value;
+
+    const params = new URLSearchParams({ limit: 500 });
+    if(search)  params.set('search',  search);
+    if(fStatus) params.set('type',    fStatus);
+    if(fDivisi) params.set('divisi',  fDivisi);
+
+    const tbody = document.getElementById('log-tbody');
+    try {
+      const data = await apiGet(`/api/absensi?${params}`);
+      const rows = data.data || [];
+
+      if(rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="ti ti-inbox" aria-hidden="true"></i><p>Tidak ada data ditemukan</p></div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => {
+        const badge = r.type==='in'
+          ? `<span class="status-badge badge-in"><span class="dot dot-green"></span>Masuk</span>`
+          : `<span class="status-badge badge-out"><span class="dot dot-red"></span>Keluar</span>`;
+        return `<tr>
+          <td><span class="mono">${formatTanggal(r.tanggal)} &nbsp;${r.waktu}</span></td>
+          <td><span class="mono">${r.nip}</span></td>
+          <td style="white-space:nowrap;"><div style="display:flex;align-items:center;"><span class="avatar" style="width:28px;height:28px;font-size:10px;margin-right:8px;">${initials(r.nama)}</span>${r.nama}</div></td>
+          <td style="font-size:12px;color:var(--text2);">${r.divisi}</td>
+          <td>${badge}</td>
+          <td style="font-size:12px;color:var(--text2);">${r.keterangan || '<span style="color:var(--text3)">—</span>'}</td>
+        </tr>`;
+      }).join('');
+    } catch(e){ console.error('renderLog error', e); }
+  }
+
+  // ── Rekap Harian ─────────────────────────────────────────────────────────────
+  async function renderRekap(){
+    const container = document.getElementById('rekap-content');
+    try {
+      const data = await apiGet(`/api/absensi/rekap?tanggal=${todayISO()}`);
+      const list  = data.data || [];
+
+      if(list.length === 0){
+        container.innerHTML = `<div class="empty-state"><i class="ti ti-user-circle" aria-hidden="true"></i><p>Belum ada data untuk direkap</p></div>`;
+        return;
+      }
+
+      const rows = list.map(p => {
+        let durasi = '<span style="color:var(--text3)">—</span>';
+        let badge  = '';
+
+        if(p.durasi_menit !== null){
+          const jam  = Math.floor(p.durasi_menit / 60);
+          const sisa = p.durasi_menit % 60;
+          durasi = `<span class="duration-pill">${jam}j ${pad(sisa)}m</span>`;
+          badge  = `<span class="status-badge badge-out"><span class="dot dot-red"></span>Selesai</span>`;
+        } else if(p.masuk){
+          badge = `<span class="status-badge badge-in"><span class="dot dot-green"></span>Di Kantor</span>`;
+        }
+
+        return `<tr>
+          <td><span class="mono">${p.nip}</span></td>
+          <td style="white-space:nowrap;"><div style="display:flex;align-items:center;"><span class="avatar" style="width:28px;height:28px;font-size:10px;margin-right:8px;">${initials(p.nama)}</span>${p.nama}</div></td>
+          <td style="font-size:12px;color:var(--text2);">${p.divisi}</td>
+          <td><span class="mono">${p.masuk  || '<span style="color:var(--text3)">—</span>'}</span></td>
+          <td><span class="mono">${p.keluar || '<span style="color:var(--text3)">—</span>'}</span></td>
+          <td>${durasi}</td>
+          <td>${badge}</td>
+        </tr>`;
+      });
+
+      container.innerHTML = `<div class="tbl-wrap"><table class="log-table">
+        <thead><tr>
+          <th>NIP</th><th>Nama Karyawan</th><th>Divisi</th>
+          <th>Jam Masuk</th><th>Jam Keluar</th><th>Durasi Kerja</th><th>Status</th>
+        </tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table></div>`;
+    } catch(e){ console.error('renderRekap error', e); }
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────────
+  function switchTab(tab){
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      const isActive = (tab==='log'&&i===0)||(tab==='rekap'&&i===1);
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-selected', isActive);
+    });
+    document.getElementById('panel-log').classList.toggle('active', tab==='log');
+    document.getElementById('panel-rekap').classList.toggle('active', tab==='rekap');
+    if(tab==='rekap') renderRekap();
+  }
+
+  // ── Export CSV (via backend) ──────────────────────────────────────────────────
+  function exportCSV(){
+    const search  = document.getElementById('search-log').value.trim();
+    const fStatus = document.getElementById('filter-status').value;
+    const fDivisi = document.getElementById('filter-divisi').value;
+
+    const params = new URLSearchParams();
+    if(search)  params.set('search',  search);
+    if(fStatus) params.set('type',    fStatus);
+    if(fDivisi) params.set('divisi',  fDivisi);
+
+    window.location.href = `${BASE_URL}/api/absensi/export/csv?${params}`;
+    showToast('Mengunduh file CSV...', 'info');
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────────
+  Promise.all([updateStats(), renderRecentLog(), renderLog()]);
+</script>
+</body>
+</html>
